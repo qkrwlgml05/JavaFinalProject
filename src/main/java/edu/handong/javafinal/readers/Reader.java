@@ -31,8 +31,11 @@ public class Reader {
 				
 				for (int j = row.getFirstCellNum(); j < row.getLastCellNum(); j++) {
 					Cell cell = row.getCell(j);
-					
-					line += cell.getStringCellValue();
+
+					if (cell.getCellType().equals(CellType.STRING)) 
+						line += "\"" + cell.getStringCellValue() + "\"";
+					else 
+						line += "\"" + cell.getNumericCellValue() + "\"";
 					if (j != row.getLastCellNum()-1) {
 						line += ",";
 					}
@@ -60,7 +63,7 @@ public class Reader {
 			Workbook wb = WorkbookFactory.create(inp);
 			
 			Sheet sheet = wb.getSheetAt(0);
-			int start = removeHeader ? sheet.getFirstRowNum()+1 : sheet.getFirstRowNum();
+			int start = removeHeader ? sheet.getFirstRowNum()+2 : sheet.getFirstRowNum();
 			int end = sheet.getLastRowNum();
 			System.out.println("Start : " + start + "\nEnd : " + end);
 			
@@ -75,11 +78,19 @@ public class Reader {
 					Cell cell = row.getCell(j);
 					if (cell == null) break;
 
-					if (cell.getCellType().equals(CellType.STRING)) 
-						line += cell.getStringCellValue();
-					else 
-						line += cell.getNumericCellValue();
-					System.out.println(line);
+					if (cell.getCellType().equals(CellType.STRING)) { 
+						String value = cell.getStringCellValue();
+						if (value == null)
+							line += "\"" + "\"";
+						else
+							line += "\"" + cell.getStringCellValue() + "\"";
+					}else {
+						double value = cell.getNumericCellValue();
+						if (value == 0)
+							line += "\"" + "\"";
+						else
+							line += "\"" + cell.getNumericCellValue() + "\"";
+					}
 					
 					if (j != row.getLastCellNum()-1) {
 						line += ",";

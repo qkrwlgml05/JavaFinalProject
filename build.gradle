@@ -18,7 +18,7 @@ repositories {
 }
 
 apply plugin: 'application'
-mainClassName = "edu.handong.javafinal.Main"
+mainClassName = "edu.handong.javafinal.JavaFinalProject"
 
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.

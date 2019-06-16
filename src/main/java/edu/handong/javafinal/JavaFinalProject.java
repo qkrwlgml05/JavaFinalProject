@@ -21,10 +21,13 @@ public class JavaFinalProject implements Runnable{
 	ArrayList<String> result1 = new ArrayList<String>();
 	ArrayList<String> result2 = new ArrayList<String>();
 	
+	private String path;
+	private String studentId;
+	
+	private int check = 0;
+	
 	public static void main(String[] args) {
 		JavaFinalProject my = new JavaFinalProject();
-		Thread t = new Thread();
-		System.out.println(args[2]);
 		
 		Options options = my.createOptions();
 		
@@ -42,18 +45,51 @@ public class JavaFinalProject implements Runnable{
 				System.exit(0);
 			}
 		}
-		t.start();
+		Thread[] th1 = new Thread[5];
+		Thread[] th2 = new Thread[5];
+		my.result1.add("\"학생번호\",\"제목\",\"요약문 (300자 내외)\",\"핵심어 (keyword,쉽표로 구분)\",\"조회날짜\",\"실제자료조회 출처 (웹자료링크)\",\"원출처 (기관명 등)\",\"제작자 (Copyright 소유처)\"");
+		my.result2.add("\"학생번호\",\"제목(반드시 요약문 양식에 입력한 제목과 같아야 함.)\",\"표/그림 일련번호\",\"자료유형(표,그림,…)\",\"자료에 나온 표나 그림 설명(캡션)\",\"자료가 나온 쪽번호\"");
+				
+		for (int i = 1; i <= 5; i++) {
+			my.path = my.input + "/000" + i + ".zip";
+			my.studentId = "000" + i;
+			th1[i-1] = new Thread(my.studentId);
+			th2[i-1] = new Thread(my.studentId);
+			try {
+				my.check = 1;
+				th1[i-1].start();
+				th1[i-1].join();
+				//my.run();
+				
+				my.check = 2;
+				th2[i-1].start();
+				th2[i-1].join();
+				my.run();
+				System.out.println(my.path);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+
+		Writer.writeAFile(my.result1, my.output+"/results1.csv");
+		Writer.writeAFile(my.result2, my.output+"/results2.csv");
 	}
 	
 	@Override
 	public void run () {
-		System.out.println("2");
-		System.out.println("5");
-			
-		result1 = ZipReader.readFirstFileInZip(input, true);
-		result2 = ZipReader.readSecondFileInZip(input, true);
-		Writer.writeAFile(result1, output+"/results1.csv");
-		Writer.writeAFile(result2, output+"/results2.csv");
+		if (check == 1) {
+			for (String line : ZipReader.readFirstFileInZip(path, studentId, true)) {
+				result1.add(line);
+			}
+		} else if (check == 2) {
+		
+			for (String line : ZipReader.readSecondFileInZip(path, studentId, true)) {
+				result2.add(line);
+				System.out.println(line);
+			}
+		}
 	}
 
 	private boolean parseOptions(Options options, String[] args) {
