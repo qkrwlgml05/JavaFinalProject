@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -61,17 +62,25 @@ public class Reader {
 			Sheet sheet = wb.getSheetAt(0);
 			int start = removeHeader ? sheet.getFirstRowNum()+1 : sheet.getFirstRowNum();
 			int end = sheet.getLastRowNum();
+			System.out.println("Start : " + start + "\nEnd : " + end);
 			
-			for (int i = start; i < end; i++) {
+			for (int i = start; i <= end; i++) {
 				Row row = sheet.getRow(i);
+				if (row == null) return values;
 				String line = "";
 				
 				int rowStart = row.getFirstCellNum();
 				int rowEnd = row.getLastCellNum();
 				for (int j = rowStart; j < rowEnd; j++) {
 					Cell cell = row.getCell(j);
+					if (cell == null) break;
+
+					if (cell.getCellType().equals(CellType.STRING)) 
+						line += cell.getStringCellValue();
+					else 
+						line += cell.getNumericCellValue();
+					System.out.println(line);
 					
-					line += cell.getCellComment();
 					if (j != row.getLastCellNum()-1) {
 						line += ",";
 					}

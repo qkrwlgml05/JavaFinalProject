@@ -13,19 +13,24 @@ import edu.handong.javafinal.readers.CustomizedException;
 import edu.handong.javafinal.readers.ZipReader;
 import edu.handong.javafinal.readers.Writer;
 
-public class JavaFinalProject {
+public class JavaFinalProject implements Runnable{
 	private String input;
 	private String output;
 	private boolean help;
 	
-	ArrayList<String> read = new ArrayList<String>();
+	ArrayList<String> result1 = new ArrayList<String>();
+	ArrayList<String> result2 = new ArrayList<String>();
 	
-	public void run (String[] args) {
-		Options options = createOptions();
+	public static void main(String[] args) {
+		JavaFinalProject my = new JavaFinalProject();
+		Thread t = new Thread();
+		System.out.println(args[2]);
 		
-		if(parseOptions(options, args)){
-			if (help){
-				printHelp(options);
+		Options options = my.createOptions();
+		
+		if(my.parseOptions(options, args)){
+			if (my.help){
+				my.printHelp(options);
 				return;
 			}
 			
@@ -36,10 +41,19 @@ public class JavaFinalProject {
 				System.out.println(e.getMessage());
 				System.exit(0);
 			}
-			
-			read = ZipReader.readFileInZip(input, true);
-			Writer.writeAFile(read, output);
 		}
+		t.start();
+	}
+	
+	@Override
+	public void run () {
+		System.out.println("2");
+		System.out.println("5");
+			
+		result1 = ZipReader.readFirstFileInZip(input, true);
+		result2 = ZipReader.readSecondFileInZip(input, true);
+		Writer.writeAFile(result1, output+"/results1.csv");
+		Writer.writeAFile(result2, output+"/results2.csv");
 	}
 
 	private boolean parseOptions(Options options, String[] args) {
