@@ -1,20 +1,24 @@
 package edu.handong.javafinal;
 
+import java.util.ArrayList;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 
 import edu.handong.javafinal.readers.CustomizedException;
-import edu.handong.javafinal.readers.Reader;
+import edu.handong.javafinal.readers.ZipReader;
+import edu.handong.javafinal.readers.Writer;
 
-public class JavaFinalProject extends Thread {
+public class JavaFinalProject {
 	private String input;
 	private String output;
 	private boolean help;
+	
+	ArrayList<String> read = new ArrayList<String>();
 	
 	public void run (String[] args) {
 		Options options = createOptions();
@@ -26,13 +30,15 @@ public class JavaFinalProject extends Thread {
 			}
 			
 			try {
-				// when there are not enough arguments from CLI, it throws the NotEnoughArgmentException which must be defined by you.
 				if(args.length<2)
 					throw new CustomizedException();
 			} catch (CustomizedException e) {
 				System.out.println(e.getMessage());
 				System.exit(0);
 			}
+			
+			read = ZipReader.readFileInZip(input, true);
+			Writer.writeAFile(read, output);
 		}
 	}
 
@@ -54,7 +60,6 @@ public class JavaFinalProject extends Thread {
 	}
 
 	private void printHelp(Options options) {
-		// automatically generate the help statement
 		HelpFormatter formatter = new HelpFormatter();
 		String header = "Java FInal Project";
 		String footer = ""; //"\nPlease report issues at https://github.com/lifove/CLIExample/issues";

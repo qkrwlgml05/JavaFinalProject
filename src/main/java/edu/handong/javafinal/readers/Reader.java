@@ -15,56 +15,76 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 public class Reader {
 	
-	public ArrayList<String> getData(String path) {
+	public ArrayList<String> getData(String path, boolean removeHeader) {
 		ArrayList<String> values = new ArrayList<String>();
 		
-		System.out.println(path);
 		
 		try (InputStream inp = new FileInputStream(path)) {
-		    //InputStream inp = new FileInputStream("workbook.xlsx");
-		    
-		        Workbook wb = WorkbookFactory.create(inp);
-		        Sheet sheet = wb.getSheetAt(0);
-		        Row row = sheet.getRow(2);
-		        Cell cell = row.getCell(1);
-		        if (cell == null)
-		            cell = row.createCell(3);
-		        
-		        values.add(cell.getStringCellValue());
-		        
-		    } catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			//InputStream inp = new FileInputStream("workbook.xlsx");
+			Workbook wb = WorkbookFactory.create(inp);
+			Sheet sheet = wb.getSheetAt(0);
+			
+			for (int i = sheet.getFirstRowNum(); i < sheet.getLastRowNum(); i++) {
+				Row row = sheet.getRow(i);
+				String line = "";
+				
+				for (int j = row.getFirstCellNum(); j < row.getLastCellNum(); j++) {
+					Cell cell = row.getCell(j);
+					
+					line += cell.getStringCellValue();
+					if (j != row.getLastCellNum()-1) {
+						line += ",";
+					}
+				}
+				values.add(line);
 			}
+		        
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return values;
 	}
 	
-	public ArrayList<String> getData(InputStream is) {
+	public ArrayList<String> getData(InputStream is, boolean removeHeader) {
 		ArrayList<String> values = new ArrayList<String>();
 		
 		try (InputStream inp = is) {
 		    //InputStream inp = new FileInputStream("workbook.xlsx");
-		    
-		        Workbook wb = WorkbookFactory.create(inp);
-		        Sheet sheet = wb.getSheetAt(0);
-		        Row row = sheet.getRow(2);
-		        Cell cell = row.getCell(1);
-		        if (cell == null)
-		            cell = row.createCell(3);
-		        
-		        values.add(cell.getStringCellValue());
-		        
-		    } catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+			Workbook wb = WorkbookFactory.create(inp);
+			
+			Sheet sheet = wb.getSheetAt(0);
+			int start = removeHeader ? sheet.getFirstRowNum()+1 : sheet.getFirstRowNum();
+			int end = sheet.getLastRowNum();
+			
+			for (int i = start; i < end; i++) {
+				Row row = sheet.getRow(i);
+				String line = "";
+				
+				int rowStart = row.getFirstCellNum();
+				int rowEnd = row.getLastCellNum();
+				for (int j = rowStart; j < rowEnd; j++) {
+					Cell cell = row.getCell(j);
+					
+					line += cell.getCellComment();
+					if (j != row.getLastCellNum()-1) {
+						line += ",";
+					}
+				}
+				values.add(line);
 			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return values;
 	}

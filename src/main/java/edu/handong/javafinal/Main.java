@@ -6,5 +6,5 @@ public class Main {
 		JavaFinalProject myFinal = new JavaFinalProject();
 		myFinal.run(args);
 	}
-
+	
 }
