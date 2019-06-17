@@ -35,7 +35,6 @@ public class Reader {
 				Row row = sheet.getRow(i);
 				String line = "";
 				
-				int rowStart = row.getFirstCellNum();
 				int rowEnd = row.getLastCellNum();
 				if (rowEnd <= 1) continue;
 				for (int j = 0; j < rowEnd; j++) {
@@ -104,7 +103,6 @@ public class Reader {
 				Row row = sheet.getRow(i);
 				String line = "";
 				
-				int rowStart = row.getFirstCellNum();
 				int rowEnd = row.getLastCellNum();
 				if (rowEnd <= 1) continue;
 				for (int j = 0; j < rowEnd; j++) {

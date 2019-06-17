@@ -16,6 +16,7 @@ public class ZipReader extends Thread {
 	public static CustomizedException ex = new CustomizedException(null);
 	
 	public static void ZipUntie (String path) {
+		final int BUFFER_SIZE = 4096;
 
 		File zipFilePath = new File(path.split(".zip")[0]);
 		ZipFile zipFile;
@@ -25,7 +26,7 @@ public class ZipReader extends Thread {
 		try {
 			zipFile = new ZipFile(path);
 			Enumeration<? extends ZipArchiveEntry> entries = zipFile.getEntries();
-			byte[] bytes = new byte[4000];
+			byte[] bytes = new byte[BUFFER_SIZE];
 			
 		    while(entries.hasMoreElements()) {
 		    	ZipArchiveEntry entry = entries.nextElement();
@@ -33,11 +34,8 @@ public class ZipReader extends Thread {
 		       
 		        InputStream in = zipFile.getInputStream(entry);
 		        FileOutputStream fi = new FileOutputStream(new File(zipFilePath, name));
-		        
-		        while(true) {
-		        	int len = in.read(bytes);
-		            if(len <= 0)
-		                break;
+		        int len = 0;
+		        while((len = in.read(bytes, 0, BUFFER_SIZE)) != -1) {
 		            fi.write(bytes, 0, len);
 		        }
 		        fi.close();
