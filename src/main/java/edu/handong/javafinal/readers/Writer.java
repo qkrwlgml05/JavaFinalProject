@@ -3,11 +3,12 @@ package edu.handong.javafinal.readers;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+
+import edu.handong.javafinal.customized.CustomizedGenerics;
 
 public class Writer {
 
-	public static void writeAFile (ArrayList<String> lines, String targetFileName) {
+	public static void writeAFile (CustomizedGenerics<String> lines, String targetFileName) {
 		PrintWriter pw = null;
 		try {
 			File fi = new File(targetFileName);
@@ -15,8 +16,8 @@ public class Writer {
 				fi.getParentFile().mkdirs();
 			}
 			pw = new PrintWriter(targetFileName);
-			for (String line : lines) 
-				pw.println(line);
+			for (int i = 0; i < lines.size(); i++) 
+				pw.println(lines.get(i));
 			
 			pw.close();
 		}catch (IOException e) {

@@ -1,7 +1,5 @@
 package edu.handong.javafinal;
 
-import java.util.ArrayList;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -9,7 +7,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-import edu.handong.javafinal.readers.CustomizedException;
+import edu.handong.javafinal.customized.CustomizedException;
+import edu.handong.javafinal.customized.CustomizedGenerics;
 import edu.handong.javafinal.readers.ZipReader;
 import edu.handong.javafinal.readers.Writer;
 
@@ -18,8 +17,8 @@ public class JavaFinalProject implements Runnable{
 	private String output;
 	private boolean help;
 	
-	ArrayList<String> result1 = new ArrayList<String>();
-	ArrayList<String> result2 = new ArrayList<String>();
+	CustomizedGenerics<String> result1 = new CustomizedGenerics<String>();
+	CustomizedGenerics<String> result2 = new CustomizedGenerics<String>();
 	
 	private String path;
 	private String studentId;
@@ -58,13 +57,13 @@ public class JavaFinalProject implements Runnable{
 			try {
 				my.check = 1;
 				th1[i-1].start();
+				my.run();
 				th1[i-1].join();
-				//my.run();
 				
 				my.check = 2;
 				th2[i-1].start();
-				th2[i-1].join();
 				my.run();
+				th2[i-1].join();
 				System.out.println(my.path);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -80,14 +79,15 @@ public class JavaFinalProject implements Runnable{
 	@Override
 	public void run () {
 		if (check == 1) {
-			for (String line : ZipReader.readFirstFileInZip(path, studentId, true)) {
-				result1.add(line);
+			CustomizedGenerics<String> read = ZipReader.readFirstFileInZip(path, studentId, true);
+			for (int i = 0; i < read.size(); i++) {
+				result1.add(read.get(i));
 			}
 		} else if (check == 2) {
-		
-			for (String line : ZipReader.readSecondFileInZip(path, studentId, true)) {
-				result2.add(line);
-				System.out.println(line);
+
+			CustomizedGenerics<String> read2 = ZipReader.readSecondFileInZip(path, studentId, true);
+			for (int i = 0; i < read2.size(); i++) {
+				result2.add(read2.get(i));
 			}
 		}
 	}

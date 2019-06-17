@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -13,34 +12,65 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
+import edu.handong.javafinal.customized.CustomizedGenerics;
+
 
 public class Reader {
 	
-	public ArrayList<String> getData(String path, boolean removeHeader) {
-		ArrayList<String> values = new ArrayList<String>();
+	final static int firstRowLength = 7;
+	final static int secondRowLength = 5;
+	
+	public CustomizedGenerics<String> getData(String path, boolean removeHeader, int select) {
+		CustomizedGenerics<String> values = new CustomizedGenerics<String>();
 		
 		
 		try (InputStream inp = new FileInputStream(path)) {
 			//InputStream inp = new FileInputStream("workbook.xlsx");
 			Workbook wb = WorkbookFactory.create(inp);
 			Sheet sheet = wb.getSheetAt(0);
+			int start = removeHeader ? sheet.getFirstRowNum()+1 : sheet.getFirstRowNum();
+			start = select == 2 ? select + 1 : select;
+			int end = sheet.getLastRowNum();
 			
-			for (int i = sheet.getFirstRowNum(); i < sheet.getLastRowNum(); i++) {
+			for (int i = start; i <= end; i++) {
+				boolean check = false;
+				
 				Row row = sheet.getRow(i);
 				String line = "";
 				
-				for (int j = row.getFirstCellNum(); j < row.getLastCellNum(); j++) {
+				int rowStart = row.getFirstCellNum();
+				int rowEnd = row.getLastCellNum();
+				if (rowEnd <= 1) continue;
+				for (int j = 0; j < rowEnd; j++) {
 					Cell cell = row.getCell(j);
-
-					if (cell.getCellType().equals(CellType.STRING)) 
-						line += "\"" + cell.getStringCellValue() + "\"";
-					else 
-						line += "\"" + cell.getNumericCellValue() + "\"";
+					if (cell == null) {
+						line += "\" \",";
+						continue;
+					}
+					if (cell.getCellType().equals(CellType.STRING)) { 
+						String value = cell.getStringCellValue();
+						if (value == null)
+							line += "\" \"";
+						else {
+							line += "\" " + cell.getStringCellValue() + " \"";
+							check = true;
+						}
+					}else {
+						double value = cell.getNumericCellValue();
+						if (value == 0.0)
+							line += "\" \"";
+						else {
+							line += "\"" + cell.getNumericCellValue() + "\"";
+							check = true;
+						}
+					}
+					
 					if (j != row.getLastCellNum()-1) {
 						line += ",";
 					}
 				}
-				values.add(line);
+				if (check)
+					values.add(line);
 			}
 		        
 		} catch (FileNotFoundException e) {
@@ -54,8 +84,8 @@ public class Reader {
 		return values;
 	}
 	
-	public ArrayList<String> getData(InputStream is, boolean removeHeader) {
-		ArrayList<String> values = new ArrayList<String>();
+	public CustomizedGenerics<String> getData(InputStream is, boolean removeHeader, int select){
+		CustomizedGenerics<String> values = new CustomizedGenerics<String>();
 		
 		try (InputStream inp = is) {
 		    //InputStream inp = new FileInputStream("workbook.xlsx");
@@ -63,40 +93,49 @@ public class Reader {
 			Workbook wb = WorkbookFactory.create(inp);
 			
 			Sheet sheet = wb.getSheetAt(0);
-			int start = removeHeader ? sheet.getFirstRowNum()+2 : sheet.getFirstRowNum();
+			int start = removeHeader ? sheet.getFirstRowNum()+1 : sheet.getFirstRowNum();
+			start = select == 2 ? select + 1 : select;
 			int end = sheet.getLastRowNum();
-			System.out.println("Start : " + start + "\nEnd : " + end);
 			
 			for (int i = start; i <= end; i++) {
+				boolean check = false;
+				
 				Row row = sheet.getRow(i);
-				if (row == null) return values;
 				String line = "";
 				
 				int rowStart = row.getFirstCellNum();
 				int rowEnd = row.getLastCellNum();
-				for (int j = rowStart; j < rowEnd; j++) {
+				if (rowEnd <= 1) continue;
+				for (int j = 0; j < rowEnd; j++) {
 					Cell cell = row.getCell(j);
-					if (cell == null) break;
-
+					if (cell == null) {
+						line += "\" \",";
+						continue;
+					}
 					if (cell.getCellType().equals(CellType.STRING)) { 
 						String value = cell.getStringCellValue();
 						if (value == null)
-							line += "\"" + "\"";
-						else
-							line += "\"" + cell.getStringCellValue() + "\"";
+							line += "\" \"";
+						else {
+							line += "\" " + cell.getStringCellValue() + " \"";
+							check = true;
+						}
 					}else {
 						double value = cell.getNumericCellValue();
-						if (value == 0)
-							line += "\"" + "\"";
-						else
+						if (value == 0.0)
+							line += "\" \"";
+						else {
 							line += "\"" + cell.getNumericCellValue() + "\"";
+							check = true;
+						}
 					}
 					
 					if (j != row.getLastCellNum()-1) {
 						line += ",";
 					}
 				}
-				values.add(line);
+				if (check)
+					values.add(line);
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
