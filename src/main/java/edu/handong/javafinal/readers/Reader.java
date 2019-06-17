@@ -17,9 +17,6 @@ import edu.handong.javafinal.customized.CustomizedGenerics;
 
 public class Reader {
 	
-	final static int firstRowLength = 7;
-	final static int secondRowLength = 5;
-	
 	public CustomizedGenerics<String> getData(String path, boolean removeHeader, int select) {
 		CustomizedGenerics<String> values = new CustomizedGenerics<String>();
 		
@@ -29,7 +26,7 @@ public class Reader {
 			Workbook wb = WorkbookFactory.create(inp);
 			Sheet sheet = wb.getSheetAt(0);
 			int start = removeHeader ? sheet.getFirstRowNum()+1 : sheet.getFirstRowNum();
-			start = select == 2 ? select + 1 : select;
+			start = select == 2 ? start + 1 : start;
 			int end = sheet.getLastRowNum();
 			
 			for (int i = start; i <= end; i++) {
@@ -52,10 +49,10 @@ public class Reader {
 						if (value == null)
 							line += "\" \"";
 						else {
-							line += "\" " + cell.getStringCellValue() + " \"";
+							line += "\"" + cell.getStringCellValue() + "\"";
 							check = true;
 						}
-					}else {
+					}else if (cell.getCellType().equals(CellType.NUMERIC)){
 						double value = cell.getNumericCellValue();
 						if (value == 0.0)
 							line += "\" \"";
@@ -63,6 +60,10 @@ public class Reader {
 							line += "\"" + cell.getNumericCellValue() + "\"";
 							check = true;
 						}
+					} else {
+						System.out.println(cell.getCellType());
+						System.out.println(cell.getStringCellValue());
+						return null;
 					}
 					
 					if (j != row.getLastCellNum()-1) {
@@ -94,7 +95,7 @@ public class Reader {
 			
 			Sheet sheet = wb.getSheetAt(0);
 			int start = removeHeader ? sheet.getFirstRowNum()+1 : sheet.getFirstRowNum();
-			start = select == 2 ? select + 1 : select;
+			start = select == 2 ? start + 1 : start;
 			int end = sheet.getLastRowNum();
 			
 			for (int i = start; i <= end; i++) {
@@ -112,15 +113,15 @@ public class Reader {
 						line += "\" \",";
 						continue;
 					}
-					if (cell.getCellType().equals(CellType.STRING)) { 
+					if (cell.getCellType().equals(CellType.STRING) || cell.getCellType().equals(CellType.BLANK)) { 
 						String value = cell.getStringCellValue();
-						if (value == null)
+						if (value == null || cell.getCellType().equals(CellType.BLANK))
 							line += "\" \"";
 						else {
-							line += "\" " + cell.getStringCellValue() + " \"";
+							line += "\"" + cell.getStringCellValue() + "\"";
 							check = true;
 						}
-					}else {
+					}else if (cell.getCellType().equals(CellType.NUMERIC) || cell.getCellType().equals(CellType.BOOLEAN)){
 						double value = cell.getNumericCellValue();
 						if (value == 0.0)
 							line += "\" \"";
@@ -128,6 +129,8 @@ public class Reader {
 							line += "\"" + cell.getNumericCellValue() + "\"";
 							check = true;
 						}
+					}else {
+						return null;
 					}
 					
 					if (j != row.getLastCellNum()-1) {

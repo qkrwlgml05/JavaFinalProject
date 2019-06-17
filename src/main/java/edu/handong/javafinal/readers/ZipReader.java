@@ -1,5 +1,7 @@
 package edu.handong.javafinal.readers;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -7,11 +9,47 @@ import java.util.Enumeration;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 
+import edu.handong.javafinal.customized.CustomizedException;
 import edu.handong.javafinal.customized.CustomizedGenerics;
 
 public class ZipReader extends Thread {
+	public static CustomizedException ex = new CustomizedException(null);
+	
+	public static void ZipUntie (String path) {
 
-	public static CustomizedGenerics<String> readFirstFileInZip (String path, String studentId, boolean removeHeader) {
+		File zipFilePath = new File(path.split(".zip")[0]);
+		ZipFile zipFile;
+		if(!zipFilePath.exists())
+			zipFilePath.mkdirs();
+
+		try {
+			zipFile = new ZipFile(path);
+			Enumeration<? extends ZipArchiveEntry> entries = zipFile.getEntries();
+			byte[] bytes = new byte[4000];
+			
+		    while(entries.hasMoreElements()) {
+		    	ZipArchiveEntry entry = entries.nextElement();
+		        String name  = entry.getName();
+		       
+		        InputStream in = zipFile.getInputStream(entry);
+		        FileOutputStream fi = new FileOutputStream(new File(zipFilePath, name));
+		        
+		        while(true) {
+		        	int len = in.read(bytes);
+		            if(len <= 0)
+		                break;
+		            fi.write(bytes, 0, len);
+		        }
+		        fi.close();
+		    }
+		    zipFile.close();
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
+
+	}
+
+	public static CustomizedGenerics<String> readFirstFileInZip (String path, String studentId, boolean removeHeader) throws CustomizedException{
 		CustomizedGenerics<String> read = new CustomizedGenerics<String>();
 		ZipFile zipFile;
 		try {
@@ -27,6 +65,7 @@ public class ZipReader extends Thread {
 			        Reader myReader = new Reader();
 			        
 			        CustomizedGenerics<String> reader = myReader.getData(stream, removeHeader, 1);
+			        if (reader == null) throw ex;
 			        for(int i = 0; i < reader.size(); i++) {
 			        	String value = "\""+ studentId + "\"," + reader.get(i);
 			        	read.add(value);
@@ -45,7 +84,7 @@ public class ZipReader extends Thread {
 		return read;
 	}
 	
-	public static CustomizedGenerics<String> readSecondFileInZip (String path, String studentId, boolean removeHeader) {
+	public static CustomizedGenerics<String> readSecondFileInZip (String path, String studentId, boolean removeHeader) throws CustomizedException{
 		CustomizedGenerics<String> read2 = new CustomizedGenerics<String>();
 		ZipFile zipFile;
 		try {
@@ -63,6 +102,7 @@ public class ZipReader extends Thread {
 				        System.out.println(entry.getName());
 
 				        CustomizedGenerics<String> reader = myReader.getData(stream, removeHeader, 2);
+				        if (reader == null) throw ex;
 				        for(int i = 0; i < reader.size(); i++) {
 				        	String value = "\""+ studentId + "\"," + reader.get(i);
 				        	read2.add(value);

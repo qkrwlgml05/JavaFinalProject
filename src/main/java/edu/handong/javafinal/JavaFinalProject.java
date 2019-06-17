@@ -24,6 +24,7 @@ public class JavaFinalProject implements Runnable{
 	private String studentId;
 	
 	private int check = 0;
+	public boolean error = true;
 	
 	public static void main(String[] args) {
 		JavaFinalProject my = new JavaFinalProject();
@@ -44,13 +45,15 @@ public class JavaFinalProject implements Runnable{
 				System.exit(0);
 			}
 		}
+		
+		ZipReader.ZipUntie(my.input);
 		Thread[] th1 = new Thread[5];
 		Thread[] th2 = new Thread[5];
 		my.result1.add("\"학생번호\",\"제목\",\"요약문 (300자 내외)\",\"핵심어 (keyword,쉽표로 구분)\",\"조회날짜\",\"실제자료조회 출처 (웹자료링크)\",\"원출처 (기관명 등)\",\"제작자 (Copyright 소유처)\"");
 		my.result2.add("\"학생번호\",\"제목(반드시 요약문 양식에 입력한 제목과 같아야 함.)\",\"표/그림 일련번호\",\"자료유형(표,그림,…)\",\"자료에 나온 표나 그림 설명(캡션)\",\"자료가 나온 쪽번호\"");
 				
 		for (int i = 1; i <= 5; i++) {
-			my.path = my.input + "/000" + i + ".zip";
+			my.path = my.input.split(".zip")[0] + "/000" + i + ".zip";
 			my.studentId = "000" + i;
 			th1[i-1] = new Thread(my.studentId);
 			th2[i-1] = new Thread(my.studentId);
@@ -71,23 +74,38 @@ public class JavaFinalProject implements Runnable{
 			}
 		}
 		
-
-		Writer.writeAFile(my.result1, my.output+"/results1.csv");
-		Writer.writeAFile(my.result2, my.output+"/results2.csv");
+		if (my.error) {
+			Writer.writeAFile(my.result1, my.output+"/results1.csv");
+			Writer.writeAFile(my.result2, my.output+"/results2.csv");
+		}else {
+			ZipReader.ex.write(my.output+"/error.csv");
+		}
 	}
 	
 	@Override
 	public void run () {
 		if (check == 1) {
-			CustomizedGenerics<String> read = ZipReader.readFirstFileInZip(path, studentId, true);
-			for (int i = 0; i < read.size(); i++) {
-				result1.add(read.get(i));
+			CustomizedGenerics<String> read;
+			try {
+				read = ZipReader.readFirstFileInZip(path, studentId, true);
+				for (int i = 0; i < read.size(); i++) {
+					result1.add(read.get(i));
+				}
+			} catch (CustomizedException e) {
+				error = false;
+				ZipReader.ex.add(path);
 			}
 		} else if (check == 2) {
 
-			CustomizedGenerics<String> read2 = ZipReader.readSecondFileInZip(path, studentId, true);
-			for (int i = 0; i < read2.size(); i++) {
-				result2.add(read2.get(i));
+			CustomizedGenerics<String> read2;
+			try {
+				read2 = ZipReader.readSecondFileInZip(path, studentId, true);
+				for (int i = 0; i < read2.size(); i++) {
+					result2.add(read2.get(i));
+				}
+			} catch (CustomizedException e) {
+				error = false;
+				ZipReader.ex.add(path);
 			}
 		}
 	}

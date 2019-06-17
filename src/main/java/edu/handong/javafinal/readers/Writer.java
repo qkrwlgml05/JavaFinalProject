@@ -18,7 +18,7 @@ public class Writer {
 			pw = new PrintWriter(targetFileName);
 			for (int i = 0; i < lines.size(); i++) 
 				pw.println(lines.get(i));
-			
+			 
 			pw.close();
 		}catch (IOException e) {
 			System.out.println("directory making error");

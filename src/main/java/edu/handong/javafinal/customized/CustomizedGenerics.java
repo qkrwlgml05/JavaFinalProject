@@ -27,5 +27,9 @@ public class CustomizedGenerics <T> {
 	public T get (int index) {
 		return (T)data[index];
 	}
+	
+	public T[] get () {
+		return (T[])data;
+	}
 
 }
