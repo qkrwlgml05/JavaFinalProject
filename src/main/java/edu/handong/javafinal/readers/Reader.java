@@ -39,10 +39,9 @@ public class Reader {
 				if (rowEnd <= 1) continue;
 				for (int j = 0; j < rowEnd; j++) {
 					Cell cell = row.getCell(j);
-					if (cell == null) {
-						line += "\" \",";
-						continue;
-					}
+					if (cell == null)
+						cell = row.createCell(j);
+					
 					if (cell.getCellType().equals(CellType.STRING)) { 
 						String value = cell.getStringCellValue();
 						if (value == null)
@@ -107,10 +106,9 @@ public class Reader {
 				if (rowEnd <= 1) continue;
 				for (int j = 0; j < rowEnd; j++) {
 					Cell cell = row.getCell(j);
-					if (cell == null) {
-						line += "\" \",";
-						continue;
-					}
+					if (cell == null)
+						cell = row.createCell(j);
+					
 					if (cell.getCellType().equals(CellType.STRING) || cell.getCellType().equals(CellType.BLANK)) { 
 						String value = cell.getStringCellValue();
 						if (value == null || cell.getCellType().equals(CellType.BLANK))
