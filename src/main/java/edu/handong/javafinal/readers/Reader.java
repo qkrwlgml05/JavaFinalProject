@@ -113,7 +113,7 @@ public class Reader {
 						if (value == null || cell.getCellType().equals(CellType.BLANK))
 							line += "\" \"";
 						else {
-							line += "\"" + cell.getStringCellValue().replace("\"", "'") + "\"";
+							line += "\"" + value.replace("\"", "'") + "\"";
 							check = true;
 						}
 					}else if (cell.getCellType().equals(CellType.NUMERIC) || cell.getCellType().equals(CellType.BOOLEAN)){
@@ -121,7 +121,7 @@ public class Reader {
 						if (value == 0.0)
 							line += "\" \"";
 						else {
-							line += "\"" + cell.getNumericCellValue() + "\"";
+							line += "\"" + value + "\"";
 							check = true;
 						}
 					}else

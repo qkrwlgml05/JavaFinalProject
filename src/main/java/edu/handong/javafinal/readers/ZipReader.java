@@ -12,7 +12,7 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
 import edu.handong.javafinal.customized.CustomizedException;
 import edu.handong.javafinal.customized.CustomizedGenerics;
 
-public class ZipReader extends Thread {
+public class ZipReader {
 	public static CustomizedException ex = new CustomizedException(null);
 	
 	public static void ZipUntie (String path) {

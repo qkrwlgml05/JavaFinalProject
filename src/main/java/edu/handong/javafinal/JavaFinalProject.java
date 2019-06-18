@@ -19,8 +19,8 @@ public class JavaFinalProject implements Runnable{
 	private String output;
 	private boolean help;
 	
-	CustomizedGenerics<String> result1 = new CustomizedGenerics<String>();
-	CustomizedGenerics<String> result2 = new CustomizedGenerics<String>();
+	public CustomizedGenerics<String> result1 = new CustomizedGenerics<String>();
+	public CustomizedGenerics<String> result2 = new CustomizedGenerics<String>();
 	
 	private String path;
 	private String studentId;
@@ -76,8 +76,8 @@ public class JavaFinalProject implements Runnable{
 		}
 		
 		if (my.error) {
-			Writer.writeAFile(my.result1, my.output+"/results1.csv");
-			Writer.writeAFile(my.result2, my.output+"/results2.csv");
+			Writer.writeAFile(my.result1, my.output.split(".csv")[0]+"1.csv");
+			Writer.writeAFile(my.result2, my.output.split(".csv")[0]+"2.csv");
 		}else {
 			ZipReader.ex.write(my.output+"/error.csv");
 		}

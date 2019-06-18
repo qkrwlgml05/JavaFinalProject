@@ -2,7 +2,7 @@ package edu.handong.javafinal.customized;
 import edu.handong.javafinal.readers.Writer;
 
 public class CustomizedException extends Exception {
-	static CustomizedGenerics<String> zipFile = new CustomizedGenerics<String>();
+	private static CustomizedGenerics<String> zipFile = new CustomizedGenerics<String>();
 	
 	public CustomizedException () {
 		super("There is CLI error.\n");

@@ -4,9 +4,21 @@ import java.util.ArrayList;
 
 
 public class CustomizedGenerics <T>{
-	private int size = 0;
-	private int margin = 100;
-	private Object[] data = new Object[margin];
+	private int size;
+	private int margin;
+	private Object[] data;
+	
+	public CustomizedGenerics (int margin) {
+		size = 0;
+		this.margin = margin;
+		data = new Object[this.margin];
+	}
+
+	public CustomizedGenerics () {
+		size = 0;
+		this.margin = 100;
+		data = new Object[margin];
+	}
 	
 	public void add (T input){
 		if (size == margin) {
