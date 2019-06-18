@@ -47,7 +47,7 @@ public class Reader {
 						if (value == null)
 							line += "\" \"";
 						else {
-							line += "\"" + cell.getStringCellValue() + "\"";
+							line += "\"" + cell.getStringCellValue().replace("\"", "'") + "\""; //^\\\"|\\\"$
 							check = true;
 						}
 					}else if (cell.getCellType().equals(CellType.NUMERIC)){
@@ -58,11 +58,8 @@ public class Reader {
 							line += "\"" + cell.getNumericCellValue() + "\"";
 							check = true;
 						}
-					} else {
-						System.out.println(cell.getCellType());
-						System.out.println(cell.getStringCellValue());
+					} else
 						return null;
-					}
 					
 					if (j != row.getLastCellNum()-1) {
 						line += ",";
@@ -70,6 +67,8 @@ public class Reader {
 				}
 				if (check)
 					values.add(line);
+			
+								
 			}
 		        
 		} catch (FileNotFoundException e) {
@@ -114,7 +113,7 @@ public class Reader {
 						if (value == null || cell.getCellType().equals(CellType.BLANK))
 							line += "\" \"";
 						else {
-							line += "\"" + cell.getStringCellValue() + "\"";
+							line += "\"" + cell.getStringCellValue().replace("\"", "'") + "\"";
 							check = true;
 						}
 					}else if (cell.getCellType().equals(CellType.NUMERIC) || cell.getCellType().equals(CellType.BOOLEAN)){
@@ -125,9 +124,8 @@ public class Reader {
 							line += "\"" + cell.getNumericCellValue() + "\"";
 							check = true;
 						}
-					}else {
+					}else
 						return null;
-					}
 					
 					if (j != row.getLastCellNum()-1) {
 						line += ",";

@@ -1,5 +1,7 @@
 package edu.handong.javafinal;
 
+import java.util.ArrayList;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -67,7 +69,6 @@ public class JavaFinalProject implements Runnable{
 				th2[i-1].start();
 				my.run();
 				th2[i-1].join();
-				System.out.println(my.path);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -80,6 +81,8 @@ public class JavaFinalProject implements Runnable{
 		}else {
 			ZipReader.ex.write(my.output+"/error.csv");
 		}
+		
+		
 	}
 	
 	@Override

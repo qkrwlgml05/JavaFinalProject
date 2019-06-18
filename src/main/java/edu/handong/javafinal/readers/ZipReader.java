@@ -31,7 +31,7 @@ public class ZipReader extends Thread {
 		    while(entries.hasMoreElements()) {
 		    	ZipArchiveEntry entry = entries.nextElement();
 		        String name  = entry.getName();
-		       
+
 		        InputStream in = zipFile.getInputStream(entry);
 		        FileOutputStream fi = new FileOutputStream(new File(zipFilePath, name));
 		        int len = 0;
@@ -56,7 +56,6 @@ public class ZipReader extends Thread {
 				int count = 0;
 	
 			    while(entries.hasMoreElements()){
-			    	System.out.println(count);
 			    	ZipArchiveEntry entry = entries.nextElement();
 			        InputStream stream = zipFile.getInputStream(entry);
 	
@@ -67,8 +66,6 @@ public class ZipReader extends Thread {
 			        for(int i = 0; i < reader.size(); i++) {
 			        	String value = "\""+ studentId + "\"," + reader.get(i);
 			        	read.add(value);
-			        	
-			        	System.out.println(value);
 			        }
 			        
 		        	break;
@@ -94,10 +91,8 @@ public class ZipReader extends Thread {
 			    	ZipArchiveEntry entry = entries.nextElement();
 			        InputStream stream = zipFile.getInputStream(entry);
 			    	if (count++ == 1) {
-			    		System.out.println(count);
 		
 				        Reader myReader = new Reader();
-				        System.out.println(entry.getName());
 
 				        CustomizedGenerics<String> reader = myReader.getData(stream, removeHeader, 2);
 				        if (reader == null) throw ex;

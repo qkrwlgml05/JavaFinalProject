@@ -1,11 +1,14 @@
 package edu.handong.javafinal.customized;
 
-public class CustomizedGenerics <T> {
+import java.util.ArrayList;
+
+
+public class CustomizedGenerics <T>{
 	private int size = 0;
 	private int margin = 100;
 	private Object[] data = new Object[margin];
 	
-	public void add (T input) {
+	public void add (T input){
 		if (size == margin) {
 			margin *= 2;
 			Object[] temp = new Object[margin];
@@ -16,8 +19,7 @@ public class CustomizedGenerics <T> {
 			
 			data = temp;
 		}
-		data[size] = input;
-		size++;
+		data[size++] = input;
 	}
 	
 	public int size () {
