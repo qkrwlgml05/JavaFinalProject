@@ -57,17 +57,15 @@ public class JavaFinalProject implements Runnable{
 		for (int i = 1; i <= 5; i++) {
 			my.path = my.input.split(".zip")[0] + "/000" + i + ".zip";
 			my.studentId = "000" + i;
-			th1[i-1] = new Thread(my.studentId);
-			th2[i-1] = new Thread(my.studentId);
+			th1[i-1] = new Thread(my, my.studentId);
+			th2[i-1] = new Thread(my, my.studentId);
 			try {
 				my.check = 1;
 				th1[i-1].start();
-				my.run();
 				th1[i-1].join();
 				
 				my.check = 2;
 				th2[i-1].start();
-				my.run();
 				th2[i-1].join();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
